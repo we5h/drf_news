@@ -29,9 +29,13 @@ ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = 'news.User'
 
-TOKEN_EXPIRE_TIME = datetime.timedelta(days=1)
+TOKEN_EXPIRE_TIME = datetime.timedelta(seconds=15)
 
 # Application definition
+
+REST_FRAMEWORK = {
+    'PAGE_SIZE': 4
+}
 
 INSTALLED_APPS = [
     'django.contrib.admin',

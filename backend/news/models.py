@@ -34,7 +34,9 @@ class News(BaseModel):
 
     title = models.CharField(
         verbose_name='Заголовок',
-        max_length=256
+        max_length=256,
+        unique=True,
+        db_index=True
     )
     text = models.TextField(
         verbose_name='Текст',
@@ -47,6 +49,10 @@ class News(BaseModel):
         related_name='news',
     )
     likes = GenericRelation(Like)
+
+    @property
+    def likes_amount(self):
+        return self.likes.count()
 
     class Meta:
         ordering = ['title']
@@ -88,7 +94,7 @@ class Comment(BaseModel):
 
 
 class Token(BaseModel):
-
+    
     user = models.OneToOneField(
         User, related_name='auth_token',
         on_delete=models.CASCADE,
@@ -102,7 +108,10 @@ class Token(BaseModel):
         unique=True
     )
 
+    def __str__(self):
+        return f'{self.user.username} - {self.key}'
+
     class Meta:
         ordering = ['date']
-        verbose_name = "Комментарий"
-        verbose_name_plural = "Комментарии"
+        verbose_name = "Токен"
+        verbose_name_plural = "Токены"
