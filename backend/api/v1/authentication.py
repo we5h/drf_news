@@ -1,5 +1,5 @@
 import datetime
-
+import pytz
 from rest_framework import authentication, exceptions
 
 from backend.settings import TOKEN_EXPIRE_TIME
@@ -8,7 +8,7 @@ from news.models import Token
 
 class CustomAuthentication(authentication.BaseAuthentication):
     def authenticate(self, request):
-        raw_token = request.META.get('Authorization')
+        raw_token = request.META.get('HTTP_AUTHORIZATION')
         if not raw_token:
             return None
 
@@ -22,9 +22,10 @@ class CustomAuthentication(authentication.BaseAuthentication):
                 'Invalid token'
             )
 
-        utc_now = datetime.datetime.utcnow()
+        utc = pytz.UTC
+        utc_now = datetime.datetime.utcnow().replace(tzinfo=utc)
 
-        if user_token.date < utc_now - TOKEN_EXPIRE_TIME:
+        if user_token.date.replace(tzinfo=utc) < utc_now - TOKEN_EXPIRE_TIME:
             raise exceptions.AuthenticationFailed(
                 'Token has expired'
             )

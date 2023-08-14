@@ -29,12 +29,15 @@ ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = 'news.User'
 
-TOKEN_EXPIRE_TIME = datetime.timedelta(seconds=15)
+TOKEN_EXPIRE_TIME = datetime.timedelta(minutes=30)
 
 # Application definition
 
 REST_FRAMEWORK = {
-    'PAGE_SIZE': 4
+    'PAGE_SIZE': 4,
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'api.v1.authentication.CustomAuthentication',
+    ]
 }
 
 INSTALLED_APPS = [

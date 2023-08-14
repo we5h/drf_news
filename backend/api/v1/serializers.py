@@ -20,9 +20,9 @@ class CommentSerializer(serializers.ModelSerializer):
 class NewsSerializer(serializers.ModelSerializer):
 
     author = serializers.ReadOnlyField(source='author.username')
-    comments = CommentSerializer(many=True)
+    comments = CommentSerializer(many=True, read_only=True)
 
     class Meta:
         model = News
-        fields = ['id', 'title', 'text', 'author']
+        fields = ['id', 'title', 'text', 'author', 'comments', 'likes_amount']
         read_only_fields = ['date', 'likes_amount']

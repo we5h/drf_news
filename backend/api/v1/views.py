@@ -4,17 +4,19 @@ from django.shortcuts import get_object_or_404
 from django.utils.crypto import get_random_string
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import AuthenticationFailed
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import viewsets, generics
+from rest_framework import status
 from rest_framework.pagination import PageNumberPagination
+from .authentication import CustomAuthentication
+from .permissions import IsAuthorAdminOrReadOnly
 
 from backend.settings import TOKEN_EXPIRE_TIME
 from news.models import Token, User, News
 
 from .serializers import TokenObtainSerializer, NewsSerializer
-from .mixins import MyUpdateDestroyAPIView
 
 
 @api_view(['POST'])
@@ -46,17 +48,37 @@ def obtain_token_view(request):
     raise AuthenticationFailed(detail='Invalid password.')
 
 
-class NewsListView(generics.ListCreateAPIView):
+class NewsViewSet(viewsets.ModelViewSet):
     queryset = News.objects.all()
     serializer_class = NewsSerializer
     pagination_class = PageNumberPagination
-    permission_classes = 
+    permission_classes = [IsAuthorAdminOrReadOnly]
+    authentication_classes = [CustomAuthentication]
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
+    def destroy(self, *args, **kwargs):
+        super().destroy(*args, **kwargs)
+        return Response({
+            "detail": "Post has been deleted successfully."
+            },
+            status=status.HTTP_200_OK
+        )
 
-class NewsDetailView(MyUpdateDestroyAPIView):
-    queryset = News.objects.all()
-    serializer_class = NewsSerializer
-    permission_classes = 
+
+# class NewsListView(generics.ListCreateAPIView):
+#     queryset = News.objects.all()
+#     serializer_class = NewsSerializer
+#     pagination_class = PageNumberPagination
+#     permission_classes = [IsAuthenticated]
+#     authentication_classes = []
+
+#     def perform_create(self, serializer):
+#         serializer.save(author=self.request.user)
+
+
+# class NewsDetailView(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = News.objects.all()
+#     serializer_class = NewsSerializer
+#     permission_classes = [IsAuthorAdminOrReadOnly]
