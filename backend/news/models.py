@@ -5,11 +5,6 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
 
-class User(AbstractUser):
-    """Модель пользователя с возможностью дальнейшего расширения."""
-    pass
-
-
 class BaseModel(models.Model):
 
     date = models.DateTimeField(
@@ -18,6 +13,14 @@ class BaseModel(models.Model):
 
     class Meta:
         abstract = True
+
+
+class User(AbstractUser):
+    """Модель пользователя с возможностью дальнейшего расширения."""
+
+    class Meta:
+        verbose_name = "Пользователь"
+        verbose_name_plural = "Пользователи"
 
 
 class Like(models.Model):
@@ -54,6 +57,10 @@ class News(BaseModel):
     def likes_amount(self):
         return self.likes.count()
 
+    @property
+    def comments_amount(self):
+        return self.comments.count()
+
     class Meta:
         ordering = ['title']
         verbose_name = "Новость"
@@ -61,6 +68,9 @@ class News(BaseModel):
 
     def __str__(self):
         return self.title[:25]
+
+    def less_comments(self):
+        return Comment.objects.all().filter(post=self).order_by("-id")[:10]
 
 
 class Comment(BaseModel):
@@ -80,7 +90,7 @@ class Comment(BaseModel):
     post = models.ForeignKey(
         News,
         on_delete=models.CASCADE,
-        verbose_name='Пост комментария',
+        verbose_name='Пост',
         related_name='comments',
     )
 
@@ -94,7 +104,7 @@ class Comment(BaseModel):
 
 
 class Token(BaseModel):
-    
+
     user = models.OneToOneField(
         User, related_name='auth_token',
         on_delete=models.CASCADE,

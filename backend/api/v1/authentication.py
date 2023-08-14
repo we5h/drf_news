@@ -19,7 +19,7 @@ class CustomAuthentication(authentication.BaseAuthentication):
             user = user_token.user
         except Token.DoesNotExist:
             raise exceptions.AuthenticationFailed(
-                'Invalid token'
+                'Invalid token.'
             )
 
         utc = pytz.UTC
@@ -27,6 +27,6 @@ class CustomAuthentication(authentication.BaseAuthentication):
 
         if user_token.date.replace(tzinfo=utc) < utc_now - TOKEN_EXPIRE_TIME:
             raise exceptions.AuthenticationFailed(
-                'Token has expired'
+                'Your token has expired. Request a new one.'
             )
         return (user, None)

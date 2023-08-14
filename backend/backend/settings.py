@@ -29,7 +29,7 @@ ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = 'news.User'
 
-TOKEN_EXPIRE_TIME = datetime.timedelta(minutes=30)
+TOKEN_EXPIRE_TIME = datetime.timedelta(days=1)
 
 # Application definition
 
@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'drf_yasg',
     'api.apps.ApiConfig',
     'news.apps.NewsConfig',
     'rest_framework',
