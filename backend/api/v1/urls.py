@@ -1,7 +1,7 @@
 from django.urls import include, path
-
-from .views import obtain_token_view, NewsViewSet, CommentViewSet
 from rest_framework import routers
+
+from .views import CommentViewSet, NewsViewSet, obtain_token_view
 
 router = routers.SimpleRouter()
 router.register(r'news', NewsViewSet)

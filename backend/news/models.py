@@ -16,7 +16,6 @@ class BaseModel(models.Model):
 
 
 class User(AbstractUser):
-    """Модель пользователя с возможностью дальнейшего расширения."""
 
     class Meta:
         verbose_name = "Пользователь"

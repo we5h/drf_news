@@ -1,26 +1,25 @@
 import datetime
+import pytz
 
 from django.shortcuts import get_object_or_404
 from django.utils.crypto import get_random_string
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework import status, viewsets
+from rest_framework.decorators import api_view
 from rest_framework.exceptions import AuthenticationFailed
-from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from rest_framework import viewsets
-from rest_framework import status
-from rest_framework.pagination import PageNumberPagination
-from .authentication import CustomAuthentication
-from .permissions import IsAuthorAdminOrReadOnly, IsAuthorPostOwnerAdminOrReadOnly
-from .mixins import ListPostDeleteViewSet, LikedMixin
 
 from backend.settings import TOKEN_EXPIRE_TIME
-from news.models import Token, User, News
+from news.models import News, Token, User
 
-from .serializers import TokenObtainSerializer, NewsSerializer, CommentSerializer
+from .authentication import CustomAuthentication
+from .mixins import LikedMixin, ListPostDeleteViewSet
+from .permissions import (IsAuthorAdminOrReadOnly,
+                          IsAuthorPostOwnerAdminOrReadOnly)
+from .serializers import (CommentSerializer, NewsSerializer,
+                          TokenObtainSerializer)
 
 
 @api_view(['POST'])
-@permission_classes([AllowAny])
 def obtain_token_view(request):
     """Запрос на получение токена."""
 
@@ -31,7 +30,8 @@ def obtain_token_view(request):
 
     user = get_object_or_404(User, username=username)
     if user.check_password(password):
-        utc_now = datetime.datetime.utcnow()
+        utc = pytz.UTC
+        utc_now = datetime.datetime.utcnow().replace(tzinfo=utc)
 
         Token.objects.filter(
             user=user,
@@ -52,7 +52,7 @@ class NewsViewSet(LikedMixin,
                   viewsets.ModelViewSet):
     queryset = News.objects.all()
     serializer_class = NewsSerializer
-    pagination_class = PageNumberPagination
+    # pagination_class = PageNumberPagination
     permission_classes = [IsAuthorAdminOrReadOnly]
     authentication_classes = [CustomAuthentication]
 
@@ -70,7 +70,7 @@ class NewsViewSet(LikedMixin,
 
 class CommentViewSet(ListPostDeleteViewSet):
     serializer_class = CommentSerializer
-    pagination_class = PageNumberPagination
+    # pagination_class = PageNumberPagination
     permission_classes = [IsAuthorPostOwnerAdminOrReadOnly]
     authentication_classes = [CustomAuthentication]
 

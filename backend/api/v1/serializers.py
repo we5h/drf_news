@@ -1,5 +1,7 @@
 from rest_framework import serializers
-from news.models import News, Comment
+
+from news.models import Comment, News
+
 from . import services
 
 
@@ -37,6 +39,5 @@ class NewsSerializer(serializers.ModelSerializer):
         read_only_fields = ['date', 'likes_amount', 'comments_amount']
 
     def get_is_fan(self, obj) -> bool:
-        """Проверяет, лайкнул ли `request.user` `obj`)."""
         user = self.context.get('request').user
         return services.is_fan(obj, user)

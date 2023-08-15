@@ -1,4 +1,5 @@
 from django.contrib.contenttypes.models import ContentType
+
 from news.models import Like
 
 
@@ -9,8 +10,7 @@ def likes_getting(obj, user):
 
 
 def add_like(obj, user):
-    """Лайкает `obj`.
-    """
+    """Лайкает `obj`."""
     obj_type = ContentType.objects.get_for_model(obj)
     like, is_created = Like.objects.get_or_create(
         content_type=obj_type, object_id=obj.id, user=user)
@@ -18,8 +18,7 @@ def add_like(obj, user):
 
 
 def remove_like(obj, user):
-    """Удаляет лайк с `obj`.
-    """
+    """Удаляет лайк с `obj`."""
     presence = False
     like = likes_getting(obj, user)
     if like:
@@ -29,8 +28,7 @@ def remove_like(obj, user):
 
 
 def is_fan(obj, user) -> bool:
-    """Проверяет, лайкнул ли `user` `obj`.
-    """
+    """Проверяет, лайкнул ли `user` `obj`."""
     if not user.is_authenticated:
         return False
     like = likes_getting(obj, user)
