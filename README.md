@@ -234,7 +234,7 @@ GET response:
 - Клонировать репозиторий и перейти в него в командной строке:
 
 ```
-git clone https://gitlab.com/we5hnicolas/fastapi_salary.git
+git clone https://github.com/we5h/drf_news.git
 ```
 
 - Установить Docker:
@@ -265,7 +265,11 @@ https://docs.docker.com/engine/install/
 - Собрать статику и скопировать в общий volume:
 
 `python3 manage.py collectstatic`
+
 `cp -r /app/collected_static/. /backend_static/`
+
+`cp -r /app/index/. /backend_static/`
+
 
 - Проект доступен по адресу 127.0.0.1:8000
 ---
