@@ -17,7 +17,7 @@ class ListPostDeleteViewSet(GenericViewSet,
 
 class LikedMixin:
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=['get'],)
     def like(self, request, pk=None):
         """Лайкает `obj`.
         """
@@ -28,7 +28,7 @@ class LikedMixin:
         else:
             return Response({"detail": "Already liked."})
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=['get'])
     def unlike(self, request, pk=None):
         """Удаляет лайк с `obj`.
         """
