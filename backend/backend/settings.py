@@ -1,20 +1,25 @@
 import datetime
+import os
 from pathlib import Path
 
+from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-yxrs8c3nkm!428uv=sw^^jlk&dt@%g%d#7azx49ond3-%p42y&'
 
-DEBUG = True
+SECRET_KEY = config('SECRET_KEY')
 
-ALLOWED_HOSTS = []
+DEBUG = config('DEBUG_VALUE', default=False, cast=bool)
+
+ALLOWED_HOSTS = config('ALLOWED_HOSTS').split(' ')
 
 AUTH_USER_MODEL = 'news.User'
 
 TOKEN_EXPIRE_TIME = datetime.timedelta(days=1)
 
 # Application definition
+
+CSRF_TRUSTED_ORIGINS = ['https://*.newsapi.ddns.net']
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
@@ -30,8 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'api.apps.ApiConfig',
     'news.apps.NewsConfig',
-    'rest_framework',
-
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -70,8 +74,12 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('POSTGRES_DB', 'django'),
+        'USER': os.getenv('POSTGRES_USER', 'django'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', ''),
+        'HOST': os.getenv('DB_HOST', ''),
+        'PORT': os.getenv('DB_PORT', 5432)
     }
 }
 
@@ -111,6 +119,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
+
+STATIC_ROOT = BASE_DIR / 'collected_static'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
