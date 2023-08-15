@@ -52,7 +52,6 @@ class NewsViewSet(LikedMixin,
                   viewsets.ModelViewSet):
     queryset = News.objects.all()
     serializer_class = NewsSerializer
-    # pagination_class = PageNumberPagination
     permission_classes = [IsAuthorAdminOrReadOnly]
     authentication_classes = [CustomAuthentication]
 
@@ -70,7 +69,6 @@ class NewsViewSet(LikedMixin,
 
 class CommentViewSet(ListPostDeleteViewSet):
     serializer_class = CommentSerializer
-    # pagination_class = PageNumberPagination
     permission_classes = [IsAuthorPostOwnerAdminOrReadOnly]
     authentication_classes = [CustomAuthentication]
 
