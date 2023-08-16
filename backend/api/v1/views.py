@@ -10,7 +10,6 @@ from rest_framework.response import Response
 
 from backend.settings import TOKEN_EXPIRE_TIME
 from news.models import News, Token, User
-
 from .authentication import CustomAuthentication
 from .mixins import LikedMixin, ListPostDeleteViewSet
 from .permissions import (IsAuthorAdminOrReadOnly,
@@ -50,6 +49,13 @@ def obtain_token_view(request):
 
 class NewsViewSet(LikedMixin,
                   viewsets.ModelViewSet):
+    """
+    Новости.
+    [GET, POST, PUT, PATCH, DELETE]
+    /like/ /unlike/ [GET]
+    Требуется аутентификация.
+    Изменение новости доступно автору и админу.
+    """
     queryset = News.objects.all()
     serializer_class = NewsSerializer
     permission_classes = [IsAuthorAdminOrReadOnly]
@@ -68,6 +74,12 @@ class NewsViewSet(LikedMixin,
 
 
 class CommentViewSet(ListPostDeleteViewSet):
+    """
+    Комментарии.
+    [GET, POST, DELETE]
+    Требуется аутентификация.
+    Удаление комментариев доступно автору, владельцу поста, админу.
+    """
     serializer_class = CommentSerializer
     permission_classes = [IsAuthorPostOwnerAdminOrReadOnly]
     authentication_classes = [CustomAuthentication]

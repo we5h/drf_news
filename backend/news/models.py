@@ -6,6 +6,7 @@ from django.db import models
 
 
 class BaseModel(models.Model):
+    """Абстрактная модель с датой создания."""
 
     date = models.DateTimeField(
         verbose_name='Дата добавления',
@@ -16,14 +17,14 @@ class BaseModel(models.Model):
 
 
 class User(AbstractUser):
-
+    """Пользователи."""
     class Meta:
         verbose_name = "Пользователь"
         verbose_name_plural = "Пользователи"
 
 
 class Like(models.Model):
-
+    """Лайки."""
     user = models.ForeignKey(User,
                              related_name='likes',
                              on_delete=models.CASCADE)
@@ -33,7 +34,7 @@ class Like(models.Model):
 
 
 class News(BaseModel):
-
+    """Новости."""
     title = models.CharField(
         verbose_name='Заголовок',
         max_length=256,
@@ -73,7 +74,7 @@ class News(BaseModel):
 
 
 class Comment(BaseModel):
-
+    """Комментарии."""
     text = models.TextField(
         verbose_name='Текст комментария',
         max_length=3500
@@ -103,7 +104,7 @@ class Comment(BaseModel):
 
 
 class Token(BaseModel):
-
+    """Токены."""
     user = models.OneToOneField(
         User, related_name='auth_token',
         on_delete=models.CASCADE,

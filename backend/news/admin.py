@@ -14,11 +14,9 @@ class NewsAdmin(admin.ModelAdmin):
                     'date',
                     )
     search_fields = ('title',)
-    empty_value_display = '-empty-'
 
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
     list_display = ('text', 'post', 'author', 'date')
     search_fields = ('author',)
-    empty_value_display = '-empty-'
